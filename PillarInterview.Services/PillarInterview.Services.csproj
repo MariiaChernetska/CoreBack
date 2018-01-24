@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="IServices\**" />
+    <Compile Remove="Services\**" />
+    <EmbeddedResource Remove="IServices\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <None Remove="IServices\**" />
+    <None Remove="Services\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\CustomerCreationInitial.cs" />
+    <Compile Remove="Models\UserDepartmentSaveModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PillarInterview.Data\PillarInterview.Data.csproj" />
+  </ItemGroup>
+
+</Project>
