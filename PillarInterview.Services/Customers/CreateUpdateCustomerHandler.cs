@@ -241,8 +241,17 @@ namespace PillarInterview.Services.Customers
                     Customer = customer,
                     Department = departments.FirstOrDefault(d => d.Name == userSaveModel.DepartmentName),
                 };
-                _unitOfWork.UserManager.CreateAsync(user, userSaveModel.Password).GetAwaiter().GetResult();
-                _unitOfWork.UserManager.AddToRoleAsync(user, Roles.UserRole).GetAwaiter().GetResult();
+                var res = _unitOfWork.UserManager.CreateAsync(user, userSaveModel.Password).GetAwaiter().GetResult();
+                if (res.Succeeded)
+                {
+                   var addToRoleRes = _unitOfWork.UserManager.AddToRoleAsync(user, Roles.UserRole).GetAwaiter().GetResult();
+                    if (!res.Succeeded) {
+                        return null;
+                    }
+                }
+                else {
+                    return null;
+                }
             }
             else
             {
@@ -263,7 +272,10 @@ namespace PillarInterview.Services.Customers
                         user.UserInfo.Department = departments.FirstOrDefault(d => d.Name == userSaveModel.DepartmentName);
                     }
 
-                    _unitOfWork.UserManager.UpdateAsync(user).GetAwaiter().GetResult();
+                    var res =_unitOfWork.UserManager.UpdateAsync(user).GetAwaiter().GetResult();
+                    if (!res.Succeeded) {
+                        return null;
+                    }
                 }
             }
 
