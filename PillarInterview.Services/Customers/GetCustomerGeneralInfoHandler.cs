@@ -15,6 +15,11 @@ namespace PillarInterview.Services.Customers
         {
             this._unitOfWork = unitOfWork;
         }
+        /// <summary>
+        /// Get customer general info
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <returns>CustomerViewModel</returns>
         public CustomerViewModel Execute(int customerId)
         {
             var customerFromDB = _unitOfWork.CustomerRepository.Get().Where(c => c.Id == customerId)

@@ -14,7 +14,11 @@ namespace PillarInterview.Services.Customers
         {
             this._unitOfWork = unitOfWork;
         }
-
+        /// <summary>
+        /// Creates or updates customer
+        /// </summary>
+        /// <param name="customerSaveModel">Customer data of CustomerSaveModel type</param>
+        /// <returns></returns>
         public bool Execute(CustomerSaveModel customerSaveModel)
         {
             using (var transaction = _unitOfWork.BeginTransaction())
@@ -103,9 +107,14 @@ namespace PillarInterview.Services.Customers
             return true;
 
         }
-
+        /// <summary>
+        /// Removes users of customer
+        /// </summary>
+        /// <param name="existingUsers">customer users</param>
+        /// <param name="customerId">customer id</param>
         private void RemoveCustomerUsers(List<string> existingUsers, int customerId)
         {
+            
             var handler = new RemoveUserHandler(_unitOfWork);
             if (customerId == 0)
             {
@@ -122,7 +131,11 @@ namespace PillarInterview.Services.Customers
 
             }
         }
-
+        /// <summary>
+        /// Removes customer departments
+        /// </summary>
+        /// <param name="existingDepartments">customer departments</param>
+        /// <param name="customerId">customer id</param>
         private void RemoveCustomerDepartments(List<int> existingDepartments, int customerId)
         {
             var handler = new RemoveDepartmentHandler(_unitOfWork);

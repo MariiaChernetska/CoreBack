@@ -15,7 +15,10 @@ namespace PillarInterview.Services.Customers
         {
             this._unitOfWork = unitOfWork;
         }
-
+        /// <summary>
+        /// Get list of customers
+        /// </summary>
+        /// <returns>List<CustomerViewModel></returns>
         public List<CustomerViewModel> Execute()
         {
             var customerList = _unitOfWork.CustomerRepository.Get().Select(c => new CustomerViewModel
