@@ -157,7 +157,7 @@ namespace PillarInterview.Data.Migrations
 
                     b.Property<string>("Address");
 
-                    b.Property<string>("Commnents");
+                    b.Property<string>("Comments");
 
                     b.Property<string>("Email");
 

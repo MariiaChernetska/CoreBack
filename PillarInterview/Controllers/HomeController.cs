@@ -12,6 +12,7 @@ namespace PillarInterview.Controllers
     {
         public IActionResult Index()
         {
+            return RedirectPermanent("~/swagger");
             return View();
         }
 

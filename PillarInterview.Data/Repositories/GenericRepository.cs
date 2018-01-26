@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using System;
 
 namespace PillarInterview.Data.Repositories
 {
@@ -32,9 +34,17 @@ namespace PillarInterview.Data.Repositories
         {
             dbSet.Remove(item);
         }
-        public IQueryable<T> Get()
+        public IQueryable<T> Get(params Expression<Func<T, object>>[] includes)
         {
-            return dbSet;
+            IQueryable<T> set = dbSet;
+            if (includes.Any())
+            {
+                foreach(var include in includes)
+                {
+                    set = set.Include(include);
+                }
+            }
+            return set;
         }
 
         public T Get(int id)

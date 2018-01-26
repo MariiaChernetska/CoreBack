@@ -16,10 +16,14 @@ namespace PillarInterview.Data.Repositories
             this.DepartmentRepository = new GenericRepository<Department>(_context);
             this.ContactRepository = new GenericRepository<Contact>(_context);
             this.DepartmentManagerRepository = new GenericRepository<DepartmentManager>(_context);
+            this.UserRepository = new GenericRepository<User>(_context);
+            this.UserInfoRepository = new GenericRepository<UserInfo>(_context);
             this.UserManager = userManager;
         }
 
         public GenericRepository<Customer> CustomerRepository { get; }
+
+        public GenericRepository<User> UserRepository { get; }
 
         public GenericRepository<CustomerType> CustomerTypesRepository { get; }
 
@@ -30,6 +34,8 @@ namespace PillarInterview.Data.Repositories
         public UserManager<User> UserManager { get; }
 
         public GenericRepository<DepartmentManager> DepartmentManagerRepository { get; }
+
+        public GenericRepository<UserInfo> UserInfoRepository { get; }
 
         public IDbContextTransaction BeginTransaction()
         {

@@ -29,7 +29,7 @@ namespace PillarInterview
                     var userManager = services.GetRequiredService<UserManager<User>>();
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-                    DbInitializer.Initialize(context, userManager, roleManager).Wait();
+                    DbInitializer.Initialize(context, userManager, roleManager).GetAwaiter().GetResult();
                 }
                 catch (Exception ex)
                 {

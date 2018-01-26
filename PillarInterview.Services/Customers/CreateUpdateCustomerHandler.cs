@@ -106,6 +106,7 @@ namespace PillarInterview.Services.Customers
 
         private void RemoveCustomerUsers(List<string> existingUsers, int customerId)
         {
+            var handler = new RemoveUserHandler(_unitOfWork);
             if (customerId == 0)
             {
                 return;
@@ -116,7 +117,7 @@ namespace PillarInterview.Services.Customers
                                         .Where(d => d.UserInfo.CustomerId == customerId && !existingUsers.Contains(d.Id)).ToList();
                 foreach (var d in usersForDelete)
                 {
-                    _unitOfWork.UserManager.DeleteAsync(d).Wait();
+                    handler.Execute(d.Id);
                 }
 
             }
@@ -124,6 +125,7 @@ namespace PillarInterview.Services.Customers
 
         private void RemoveCustomerDepartments(List<int> existingDepartments, int customerId)
         {
+            var handler = new RemoveDepartmentHandler(_unitOfWork);
             if (customerId == 0)
             {
                 return;
@@ -134,7 +136,7 @@ namespace PillarInterview.Services.Customers
                                         .Where(d => d.CustomerId == customerId && !existingDepartments.Contains(d.Id)).ToList();
                 foreach (var d in departmentsForDelete)
                 {
-                    _unitOfWork.DepartmentRepository.Delete(d);
+                    handler.Execute(d.Id);
                 }
 
             }
@@ -169,7 +171,7 @@ namespace PillarInterview.Services.Customers
             }
             else
             {
-                department = _unitOfWork.DepartmentRepository.Get(departmentSaveModel.Id);
+                department = _unitOfWork.DepartmentRepository.Get(e => e.DepartmentManager).Where(e => e.Id == departmentSaveModel.Id).SingleOrDefault();
                 if (customer == null)
                 {
                     return null;
@@ -216,6 +218,8 @@ namespace PillarInterview.Services.Customers
             {
                 user = new User();
                 user.Name = userSaveModel.Name;
+                user.Email = userSaveModel.Email;
+
                 user.PhoneNumber = userSaveModel.Phone;
                 user.UserName = userSaveModel.UserName;
                 user.UserInfo = new UserInfo
@@ -224,11 +228,12 @@ namespace PillarInterview.Services.Customers
                     Customer = customer,
                     Department = departments.FirstOrDefault(d => d.Name == userSaveModel.DepartmentName),
                 };
-                _unitOfWork.UserManager.CreateAsync(user, userSaveModel.Password).Wait();
+                _unitOfWork.UserManager.CreateAsync(user, userSaveModel.Password).GetAwaiter().GetResult();
+                _unitOfWork.UserManager.AddToRoleAsync(user, Roles.UserRole).GetAwaiter().GetResult();
             }
             else
             {
-                user = _unitOfWork.UserManager.Users.FirstOrDefault(u => u.Id == userSaveModel.Id);
+                user = _unitOfWork.UserRepository.Get(e=>e.UserInfo).FirstOrDefault(u => u.Id == userSaveModel.Id);
                 if (user == null)
                 {
                     return null;
@@ -238,13 +243,14 @@ namespace PillarInterview.Services.Customers
                     user.Name = userSaveModel.Name;
                     user.PhoneNumber = userSaveModel.Phone;
                     user.UserName = userSaveModel.UserName;
+                    user.Email = userSaveModel.Email;
                     if(user.UserInfo == null)
                     {
                         user.UserInfo = new UserInfo { User = user };
                         user.UserInfo.Department = departments.FirstOrDefault(d => d.Name == userSaveModel.DepartmentName);
                     }
 
-                    _unitOfWork.UserManager.UpdateAsync(user).Wait();
+                    _unitOfWork.UserManager.UpdateAsync(user).GetAwaiter().GetResult();
                 }
             }
 
@@ -276,7 +282,7 @@ namespace PillarInterview.Services.Customers
             customer.Address = customerSaveModel.Address;
             customer.NumberOfSchools = customerSaveModel.NumberOfSchools;
             customer.TypeId = customerSaveModel.Type;
-            customer.Commnents = customerSaveModel.Commnents;
+            customer.Comments = customerSaveModel.Comments;
             customer.Email = customerSaveModel.Email;
             _unitOfWork.CustomerRepository.Update(customer);
             return customer;

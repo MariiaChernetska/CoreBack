@@ -11,7 +11,7 @@ using System;
 namespace PillarInterview.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180124220937_Initial")]
+    [Migration("20180125180858_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -158,7 +158,7 @@ namespace PillarInterview.Data.Migrations
 
                     b.Property<string>("Address");
 
-                    b.Property<string>("Commnents");
+                    b.Property<string>("Comments");
 
                     b.Property<string>("Email");
 

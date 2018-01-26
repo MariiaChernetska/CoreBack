@@ -14,11 +14,12 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PillarInterview.Controllers
 {
    
-    [Route("api/[controller]/[action]")]
+    [Route("api/login")]
     public class LoginController : Controller
     {
         private readonly UserManager<User> _userManager;
@@ -33,7 +34,7 @@ namespace PillarInterview.Controllers
             SignInManager<User> signInManager,
             IEmailSender emailSender,
             IConfiguration configuration,
-            ILogger<AccountController> logger)
+            ILogger<LoginController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -41,7 +42,7 @@ namespace PillarInterview.Controllers
             _configuration = configuration;
             _logger = logger;
         }
-
+        
         [HttpPost]
         public async Task<IActionResult> LoginRequest([FromBody] LoginByUsernameViewModel model)
         {
@@ -53,12 +54,10 @@ namespace PillarInterview.Controllers
                 if (result.Succeeded)
                 {
                     var appUser = _userManager.Users.SingleOrDefault(r => r.UserName == model.Username);
-                    string token = GenerateJwtToken(appUser.Email, appUser);
+                    var roles = await _userManager.GetRolesAsync(appUser);
+                    string token = GenerateJwtToken(appUser.Email, appUser, roles);
                     _logger.LogInformation("User logged in.");
-                    var resObj = new object {
-
-                    };
-                    return new OkObjectResult(token);
+                    return new OkObjectResult(new { Token = token, Roles = roles, UserName = appUser.Name });
                 }
                 else
                 {
@@ -68,7 +67,8 @@ namespace PillarInterview.Controllers
             }
             else return new BadRequestObjectResult("Invalid data");
         }
-        private string GenerateJwtToken(string email, User user)
+
+        private string GenerateJwtToken(string email, User user, IEnumerable<string> roles)
         {
             var claims = new List<Claim>
             {
@@ -76,6 +76,11 @@ namespace PillarInterview.Controllers
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
+            
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, role));
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

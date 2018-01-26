@@ -1,11 +1,10 @@
-﻿using PillarInterview.Data.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace PillarInterview.Services.Models
 {
-    public class CustomerSaveModel
+    public class CustomerViewModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -14,10 +13,6 @@ namespace PillarInterview.Services.Models
         public string Phone { get; set; }
         public string Comments { get; set; }
         public int? NumberOfSchools { get; set; }
-        public int Type { get; set; }
-        public List<UserSaveModel> Users { get; set; }
-        public List<DepartmentSaveModel> Departments { get; set; }
-        public List<ContactSaveModel> Contacts { get; set; }
-
+        public string Type { get; set; }
     }
 }

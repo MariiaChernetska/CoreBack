@@ -175,7 +175,7 @@ namespace PillarInterview.Data.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Address = table.Column<string>(nullable: true),
-                    Commnents = table.Column<string>(nullable: true),
+                    Comments = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true),
                     NumberOfSchools = table.Column<int>(nullable: true),

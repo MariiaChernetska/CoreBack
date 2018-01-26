@@ -9,7 +9,7 @@ namespace PillarInterview.Data.Models
         public string Address { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
-        public string Commnents { get; set; }
+        public string Comments { get; set; }
         public int? NumberOfSchools { get; set; }
         public int TypeId { get; set; }
         public virtual CustomerType Type { get; set; }

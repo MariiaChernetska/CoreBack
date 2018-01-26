@@ -13,7 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using PillarInterview.Data.Repositories;
-using Swashbuckle.AspNetCore.Swagger;
+using System.Security.Claims;
 
 namespace PillarInterview
 {
@@ -64,7 +64,6 @@ namespace PillarInterview
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
                 })
                 .AddJwtBearer(cfg =>
                 {
@@ -74,10 +73,13 @@ namespace PillarInterview
                     {
                         ValidIssuer = Configuration["JwtIssuer"],
                         ValidAudience = Configuration["JwtIssuer"],
+                        RoleClaimType = ClaimTypes.Role,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtKey"])),
                         ClockSkew = TimeSpan.Zero // remove delay of token when expire
                     };
                 });
+
+            services.AddAuthorization(options => options.AddPolicy("Admin", policy => policy.RequireRole(Roles.AdminRole)));
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -98,10 +100,7 @@ namespace PillarInterview
             services.AddMvc();
 
             // Register the Swagger generator, defining one or more Swagger documents
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new Info { Title = "Pillar Interview API", Version = "v1" });
-            });
+            services.AddSwaggerDocumentation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -129,14 +128,7 @@ namespace PillarInterview
 
             app.UseAuthentication();
             
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
-
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pillar Interview V1");
-            });
+            app.UseSwaggerDocumentation();
 
             app.UseMvc(routes =>
             {

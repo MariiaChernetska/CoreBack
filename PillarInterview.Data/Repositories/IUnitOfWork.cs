@@ -12,6 +12,8 @@ namespace PillarInterview.Data.Repositories
         GenericRepository<Department> DepartmentRepository { get; }
         GenericRepository<DepartmentManager> DepartmentManagerRepository { get; }
         UserManager<User> UserManager { get; }
+        GenericRepository<User> UserRepository { get; }
+        GenericRepository<UserInfo> UserInfoRepository { get; }
 
         IDbContextTransaction BeginTransaction();
 
