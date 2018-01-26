@@ -27,11 +27,9 @@ namespace PillarInterview.Data
 
             var user = new User { UserName = "Admin", Email = "aaa@aaa.com" };
             await userManager.CreateAsync(user, "P@ssw0rd");
-            var user1 = new User { UserName = "User1", Email = "user1@aaa.com" };
-            await userManager.CreateAsync(user1, "P@ssw0rd");
+         
 
             await userManager.AddToRoleAsync(user, Roles.AdminRole);
-            await userManager.AddToRoleAsync(user1, Roles.UserRole);
 
             var customerTypes = new [] {
                 new CustomerType{ Title="Municipality"},

@@ -8,7 +8,6 @@ using PillarInterview.Data.Models;
 
 namespace PillarInterview.Controllers
 {
-    [Authorize(Roles = Roles.AdminRole)]
     [Route("api/customers")]
     public class CustomerController : Controller
     {
@@ -18,7 +17,8 @@ namespace PillarInterview.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-        
+        [Authorize(Roles = Roles.AdminRole)]
+
         [HttpPost]
         public IActionResult SaveCustomer([FromBody]CustomerSaveModel customerSaveModel)
         {
@@ -31,11 +31,14 @@ namespace PillarInterview.Controllers
             return new OkResult();
         }
         [HttpGet("{id}")]
+        [Authorize(Roles = Roles.AdminRole)]
+
         public IActionResult Get(int id) {
             var handler = new GetCustomerHandler(_unitOfWork);
             var res = handler.Execute(id);
            return new OkObjectResult(res);
         }
+        [Authorize(Roles = Roles.AdminRole)]
 
         [HttpGet]
         public IActionResult GetAll()
@@ -60,6 +63,7 @@ namespace PillarInterview.Controllers
             var res = handler.Execute(userInfo.CustomerId);
             return Ok(res);
         }
+        [Authorize(Roles = Roles.AdminRole)]
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
